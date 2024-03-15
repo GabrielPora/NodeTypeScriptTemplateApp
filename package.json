@@ -1,0 +1,43 @@
+{
+  "name": "gitclient",
+  "version": "1.0.0",
+  "description": "Interview project for fitillion",
+  "scripts": {
+    "start-api": "nodemon --config nodemon.json",
+    "build-api": "node build-api.js prod",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "format": "prettier --write \"**/*.{ts,json,html}\"",
+    "prepare": "husky install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielPora/InterviewProject.git"
+  },
+  "author": "Gabriel Groener",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GabrielPora/InterviewProject/issues"
+  },
+  "homepage": "https://github.com/GabrielPora/InterviewProject#readme",
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "axios": "^1.6.7",
+    "cjs": "^0.0.11",
+    "connect": "^3.7.0",
+    "esbuild": "^0.20.1",
+    "express": "^4.18.3",
+    "husky": "^9.0.11",
+    "octokit": "^3.1.2",
+    "pg": "^8.11.3",
+    "qs": "^6.12.0",
+    "reflect-metadata": "^0.2.1",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "prettier": "3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  }
+}

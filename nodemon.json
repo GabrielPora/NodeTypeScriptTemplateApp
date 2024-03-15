@@ -1,0 +1,6 @@
+{
+	"watch": ["./apps/api/src/"],
+	"ext": "ts",
+	"exec": "node --inspect=0.0.0.0:9229 -r ts-node/register ./apps/api/src/index.ts",
+	"legacyWatch": true
+}
