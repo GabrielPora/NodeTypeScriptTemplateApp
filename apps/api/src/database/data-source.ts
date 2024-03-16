@@ -6,6 +6,8 @@ import { Parent } from "../entities/parent";
 import { Committer } from "../entities/committer";
 import { Commit } from "../entities/commit";
 import { Author } from "../entities/author";
+import { Verification } from "../entities/verification";
+import { RepoCommit } from "../entities/repoCommit";
 
 export const dataSource = new DataSource({
   type: "postgres",
@@ -14,7 +16,17 @@ export const dataSource = new DataSource({
   database: process.env.DB_NAME,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  entities: [Author, Commit, Committer, Parent, Repository, Tree, User],
+  entities: [
+    Author,
+    Commit,
+    Committer,
+    Parent,
+    Repository,
+    Tree,
+    User,
+    Verification,
+    RepoCommit,
+  ],
   logging: false,
   synchronize: false,
   migrations: [],

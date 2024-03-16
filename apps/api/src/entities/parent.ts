@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
-import { Commit } from "./commit";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("parent", { schema: "github" })
 export class Parent {
@@ -14,7 +13,4 @@ export class Parent {
 
   @Column()
   html_url: string;
-
-  @ManyToOne(() => Commit, (commit) => commit.parents)
-  commit: Commit;
 }

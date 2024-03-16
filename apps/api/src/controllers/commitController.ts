@@ -3,9 +3,18 @@ import { Commit } from "../entities/commit";
 import { dataSource } from "../database/data-source";
 import { GitApiUrlParam } from "../interfaces/owner";
 import axios from "axios";
+import { Octokit } from "octokit";
+import { Verification } from "../entities/verification";
+import { Author } from "../entities/author";
+import { Tree } from "../entities/tree";
+import { Committer } from "../entities/committer";
 // import qs from "qs";
 
 const commitRepository = dataSource.getRepository(Commit);
+const authorRepository = dataSource.getRepository(Author);
+const committerRepository = dataSource.getRepository(Committer);
+const verificationRepository = dataSource.getRepository(Verification);
+const treeRepository = dataSource.getRepository(Tree);
 
 export class CommitController {
   async getAllCommits(req: Request, res: Response) {
@@ -16,6 +25,10 @@ export class CommitController {
   async getCommitById(req: Request, res: Response) {
     const id: number = parseInt(req.params.id);
     const commit = await commitRepository.findOneBy({ id });
+    const commitTest = await commitRepository.findOne({
+      where: { id },
+      //   relations: { author: true },
+    });
 
     if (!commit) {
       res.status(404).send("Commit not found");
@@ -29,7 +42,6 @@ export class CommitController {
       owner: req.params.owner,
       repos: req.params.repos,
     };
-    var querystring = require("querystring");
     const baseUrl = process.env.BASE_URL;
     const owner = gitApiUrlParam.owner
       ? gitApiUrlParam.owner
@@ -37,24 +49,37 @@ export class CommitController {
     const repos = gitApiUrlParam.repos
       ? gitApiUrlParam.repos
       : process.env.REPOS;
-    const url = baseUrl + "/repos/" + owner + "/" + repos + "/commits";
 
-    let results: any = await axios.get(url, {
+    const octokit = new Octokit({
+      auth: process.env.TOKEN,
+    });
+
+    let results = await octokit.request("GET /repos/{owner}/{repo}/commits", {
+      owner: owner,
+      repo: repos,
       headers: {
-        "Content-Type": "application/json",
+        "X-GitHub-Api-Version": "2022-11-28",
       },
     });
 
-    let value: Commit[];
+    let commitArr: Commit[] = [];
     if (results !== null && results !== undefined) {
-      let data = results.data;
-      data.forEach((element) => {
-		console.log(element);
-        // value.push(element);
+      results.data.forEach((element) => {
+        const url = new URL(element.commit.url);
+        let elm = Object.assign(new Commit(), {
+          author: element.commit.author,
+          committer: element.commit.committer,
+          message: element.commit.message,
+          comment_count: element.commit.comment_count,
+          verification: element.commit.verification,
+          url: url.toString(),
+          tree: element.commit.tree,
+        });
+        commitArr.push(elm);
       });
     }
 
-    const newCommit = commitRepository.create(value);
+    const newCommit = commitRepository.create(commitArr);
 
     try {
       await commitRepository.save(newCommit);

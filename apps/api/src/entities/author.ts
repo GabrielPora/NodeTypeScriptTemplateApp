@@ -1,16 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Commit } from "./commit";
+import { Committer } from "./committer";
 
 @Entity("author", { schema: "github" })
 export class Author {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: "name", nullable: true })
   name: string;
 
-  @Column()
+  @Column({ name: "email", nullable: true })
   email: string;
 
-  @Column()
+  @Column({ name: "date", nullable: true })
   date: Date;
+
+  // RELATIONSHIPS -------------------------------------------------------- //
+  @OneToMany(() => Commit, (commit) => commit.author)
+  commits: Commit[];
 }

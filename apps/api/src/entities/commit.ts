@@ -3,47 +3,41 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
+  JoinColumn,
 } from "typeorm";
 import { Committer } from "./committer";
 import { Tree } from "./tree";
-import { Parent } from "./parent";
-// import { Author } from "./author";
+import { Verification } from "./verification";
+import { Author } from "./author";
 
 @Entity("commit", { schema: "github" })
 export class Commit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  sha: string;
-
-  @Column()
-  node_id: string;
-
-  @ManyToOne(() => Committer)
-  committer: Committer;
-
-  @ManyToOne(() => Committer)
-  author: Committer;
-
-  @Column()
+  @Column({ name: "message", nullable: true })
   message: string;
 
-  @ManyToOne(() => Tree)
-  tree: Tree;
+  @Column({ name: "comment_count", nullable: true })
+  comment_count: number;
 
-  @Column()
+  @Column({ name: "url", nullable: true })
   url: string;
 
-  @Column()
-  html_url: string;
+  // RELATIONSHIPS -------------------------------------------------------- //
+  @ManyToOne(() => Author, (author) => author.commits, { cascade: true })
+  @JoinColumn({ name: "author_id", referencedColumnName: "id" })
+  author: Author;
 
-  @Column()
-  comments_url: string;
+  @ManyToOne(() => Committer, (committer) => committer.commits, { cascade: true })
+  @JoinColumn({ name: "committer_id", referencedColumnName: "id" })
+  committer: Committer;
 
-  @OneToMany(() => Parent, (parent) => parent.commit)
-  parents: Parent[];
+  @ManyToOne(() => Verification, (verification) => verification.commits, { cascade: true })
+  @JoinColumn({ name: "verification_id", referencedColumnName: "id" })
+  verification: Verification;
 
-  // Define other columns and relationships as needed
+  @ManyToOne(() => Tree, (tree) => tree.commits, { cascade: true })
+  @JoinColumn({ name: "tree_id", referencedColumnName: "id" })
+  tree: Tree;
 }
